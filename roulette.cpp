@@ -315,6 +315,11 @@ void print_color_options() {
     cout << "[1]...Röd" << endl;
     cout << "[2]...Svart" << endl;
 }
+
+/// @brief Prints bet information based on inparameters. Prints chosen color if that type of round or the number chosen.
+/// @param gameType RED or BLACK.
+/// @param bet Amount of bet.
+/// @param number Number chosen.
 void print_preroll_info(GameType gameType, int bet, int number) {
     cout << endl
          << "Du har lagt " << bet << "kr på ";
@@ -328,6 +333,9 @@ void print_preroll_info(GameType gameType, int bet, int number) {
         cout << "nummer " << number << "." << endl;
     }
 }
+
+/// @brief Prints the roulette roll. Presents infromation about the roll.
+/// @param rolled_number The rolled number.
 void print_drawing(int rolled_number) {
     cout << endl
          << "Rullningen startar..." << endl;
