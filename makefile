@@ -3,8 +3,8 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++11
 
 # Define the target executable and the source files
-TARGET = roulette
-SRCS = roulette.cpp
+TARGET = bandit
+SRCS = bandit.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 # Default target
