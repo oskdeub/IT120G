@@ -104,6 +104,7 @@ void play_Bandit(int &balance, int &total_profit){
                 int adjustment = play_round(bet);
                 if (adjustment > 0){
                     total_profit += (adjustment - bet);
+                    balance += adjustment;
                 }
             } else {
                 cout << "Ditt saldo är för lågt! Lägg in mer pengar." << endl;

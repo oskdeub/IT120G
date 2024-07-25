@@ -74,7 +74,7 @@ int main() {
     return 0;
 }
 
-/// @brief Main roulette logic. Uses 'balance' and 'total_profit' to manipulate the game state. 
+/// @brief Main roulette logic. Uses 'balance' and 'total_profit' to manipulate the game state.
 /// Calls for functions to help handle placing bets, choosing number or color, rolling the game and determine win/loss.
 /// @param balance player balance
 /// @param total_profit  player total profit
@@ -91,14 +91,14 @@ void playRoulette(int &balance, int &total_profit) {
     print_drawing(rolled_number);
 
     if (game_type == COLOR) {
-        // Modulo decides if rolled number is even or odd. 
+        // Modulo decides if rolled number is even or odd.
         // Player number for black is 2, so it also gets % 2.
         rolled_number = rolled_number % 2; // 0 is black, 1 is red
         player_number = player_number % 2;
     }
 
     bool win = false;
-        // decide win
+    // decide win
     if (rolled_number == player_number) {
         win = true;
     }
@@ -145,17 +145,17 @@ int choose_number(GameType gameType) {
 }
 
 /// @brief Returns the multiplier for the game type.
-/// @param gameType 
+/// @param gameType
 /// @return 2 if COLOR, 10 otherwise (NUMBER).
-int get_multi(GameType gameType){
-    if(gameType == COLOR){
+int get_multi(GameType gameType) {
+    if (gameType == COLOR) {
         return 2;
     } else {
         return 10;
     }
 }
 
-/// @brief Checks the cin for unwanted types. If int choice is not int, 
+/// @brief Checks the cin for unwanted types. If int choice is not int,
 /// the cin will be emptied and the user notified of it's error. Keeps going until the user enters an int.
 /// @param choice_text Message to print ahead of the user input.
 /// @return int of the choice made.
