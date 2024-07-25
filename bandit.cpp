@@ -1,4 +1,3 @@
-
 #include <ctime>
 #include <iostream>
 #include <limits>
@@ -26,7 +25,7 @@ int calculate_transaction(int bet, int winning_lines);
 
 void play_Bandit(int &balance, int &total_profit);
 int play_round(int bet);
-
+bool check_bet_lte_balance(int bet, int balance);
 int check_win(int symbol_screen[3][3]);
 int check_columns(int symbol_screen[3][3]);
 int check_rows(int symbol_screen[3][3]);
@@ -43,11 +42,15 @@ int get_bet_amount();
 int main() {
 
     srand(time(0));
+
+    //Start balance
     int balance = 1000;
     int total_profit = 0;
 
     cout << "----------- Enarmad Bandit -----------" << endl;
 
+
+    //Main menu
     bool shutdown = false;
     int menu_choice;
     while (!shutdown) {
@@ -83,49 +86,76 @@ int main() {
     return 0;
 }
 
+/// @brief Controls the round being played. 
+/// @param balance Player balance
+/// @param total_profit Player total profit
 void play_Bandit(int &balance, int &total_profit){
     
     //take bet
+    int bet = 0;
+    int temp_bet;
 
-    int bet = get_bet_amount();
-
+    //Loop until bet > 0, i.e. bet amount is OK.
+    while(!bet){
+        temp_bet = get_bet_amount();
+        if(check_bet_lte_balance(temp_bet, balance)){
+            bet = temp_bet;
+        }
+    }
+   
     //Lets make this so the player can keep spinning on a chosen bet or change the bet or go back
     //So we need a menu
     int play = 1;
     while(play) {
         print_bandit_menu(bet);
         int choice = get_menu_choice("Val: ");
-
+       
         switch(choice){
             
             case 1: //Play
-            if(bet <= balance){
-                balance -= bet;
-                int adjustment = play_round(bet);
-                if (adjustment > 0){
-                    total_profit += (adjustment - bet);
-                    balance += adjustment;
+                if(bet <= balance){
+                    balance -= bet;
+                    int adjustment = play_round(bet);
+                    if (adjustment > 0){
+                        total_profit += (adjustment - bet);
+                        balance += adjustment;
+                    }
+                } else {
+                    cout << "Ditt saldo är för lågt! Lägg in mer pengar." << endl;
                 }
-            } else {
-                cout << "Ditt saldo är för lågt! Lägg in mer pengar." << endl;
-            }
-            cout << "Saldo: " << balance << endl;
-            break;
+                cout << "Saldo: " << balance << endl;
+                break;
             case 2: //Change bet
-            bet = get_bet_amount();
-            break;
+                temp_bet = get_bet_amount();
+                if(check_bet_lte_balance(temp_bet, balance)){
+                    bet = temp_bet;
+                }
+                break;
             case 3: 
-            play = 0;
+                play = 0;
             default:
-            cout << "Felaktigt menyval, försök igen" << endl;
+                cout << "Felaktigt menyval, försök igen" << endl;
             break;
         }
-    
     }
-
-    
 }
 
+/// @brief Checks if bet is less than or equal to balance.
+/// @param bet 
+/// @param balance 
+/// @return True if bet <= balance. False if bet > balance.
+bool check_bet_lte_balance(int bet, int balance){
+    if (bet <= balance){
+        return true;
+    } else {
+        cout << "Insatsen kan inte vara högre än ditt saldo. Försök igen." << endl;
+        return false;
+    }
+}
+
+/// @brief Function that control a round logic. Randomizes a 3x3 int array. Prints it, and calculates winning lines.
+/// @param bet Player-chosen bet amount.
+/// @return The adjustment to balance. Negative if loss, positive if win.
 int play_round(int bet){
     //Draw numbers
 
@@ -155,13 +185,17 @@ int play_round(int bet){
     return adjustment;
 }
 
+/// @brief Calculates the win amount based on bet and the number of winning lines.
+/// @param bet Player-chosen bet amount.
+/// @param winning_lines Number of winning lines.
+/// @return money.
 int calculate_transaction(int bet, int winning_lines){
     if(winning_lines){
         if(winning_lines <= 4){
             return ((winning_lines + 1) * bet);
         } else if (winning_lines == 5){
             return (7 * bet);
-        } else if (winning_lines == 10){
+        } else if (winning_lines >= 6){
             return (10 * bet);
         }
     } else {
@@ -169,6 +203,9 @@ int calculate_transaction(int bet, int winning_lines){
     }
 }
 
+/// @brief Checks symbol_screen for winning lines.
+/// @param symbol_screen 3x3 int array.
+/// @return number of winning lines.
 int check_win(int symbol_screen[3][3]){
     int winning_lines = 0;
 
@@ -179,6 +216,9 @@ int check_win(int symbol_screen[3][3]){
     return winning_lines;
 }
 
+/// @brief Checks the columns of symbol_screen.
+/// @param symbol_screen 3x3 int array.
+/// @return Number of winning column lines.
 int check_columns(int symbol_screen[3][3]){
     int winning_lines = 0;
     for(int col = 0; col < 3; col++){
@@ -189,6 +229,9 @@ int check_columns(int symbol_screen[3][3]){
     return winning_lines;
 }
 
+/// @brief Checks the rows of symbol_screen.
+/// @param symbol_screen 3x3 int array.
+/// @return Number of winning row lines.
 int check_rows(int symbol_screen[3][3]){
     int winning_lines = 0;
     for(int row = 0; row < 3; row++){
@@ -199,6 +242,9 @@ int check_rows(int symbol_screen[3][3]){
     return winning_lines;
 }
 
+/// @brief Checks the diagonals of symbol screen.
+/// @param symbol_screen 3x3 int array.
+/// @return Number of winning diagonal lines.
 int check_diagonals(int symbol_screen[3][3]){
     int winning_lines = 0;
     if(symbol_screen[0][0] == symbol_screen[1][1] && symbol_screen[1][1] == symbol_screen[2][2]){
